@@ -1,0 +1,14 @@
+# 请修改 user-params 字段以符合你需要提交的个人信息
+config = {
+    "service": {
+        "daily-report": {
+            "login": "https://weixine.ustc.edu.cn/2020/caslogin",
+            "url": "https://weixine.ustc.edu.cn/2020/home",
+            "user-params": {
+                "jinji_lxr": "",    # 紧急联系人
+                "jinji_guanxi": "", # 与本人关系
+                "jiji_mobile": ""	# 联系人电话
+            }
+        }
+    },
+}
