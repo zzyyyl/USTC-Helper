@@ -1,8 +1,8 @@
 import requests
-import cv2 as cv
-import numpy as np
-from PIL import Image
-import hashlib
+# import cv2 as cv
+# import numpy as np
+# from PIL import Image
+# import hashlib
 import json
 
 fake_useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
@@ -67,11 +67,19 @@ class Login:
         c = s.find("name=\"CAS_LT\"")
         CAS_LT = s[c:].split('\"')[3]
 
+
         res = self.session.get("https://passport.ustc.edu.cn/validatecode.jsp?type=login", allow_redirects=False)
-        img = cv.imdecode(np.frombuffer(res.content, np.uint8), cv.IMREAD_COLOR)
-        a = Image.fromarray(img)
-        a.show()
-        LT = input("input validatecode:")
+        #非常奇怪，只要get过上述网址，没有LT也能登录
+
+        # this_validatecode = hashlib.md5(res.content).hexdigest()
+
+        # if "validatecode" in self.login_config and this_validatecode in self.login_config["validatecode"]:
+        #     LT = self.login_config["validatecode"][this_validatecode]
+        # else:
+        #     img = cv.imdecode(np.frombuffer(res.content, np.uint8), cv.IMREAD_COLOR)
+        #     a = Image.fromarray(img)
+        #     a.show()
+        #     LT = input("input validatecode:")
 
         params = {
             "model": "uplogin.jsp",
@@ -81,7 +89,7 @@ class Login:
             "showCode": "1",
             "username": self.stuid,
             "password": self.password,
-            "LT": LT,
+            # "LT": LT,
             "button": ""
         }
 
