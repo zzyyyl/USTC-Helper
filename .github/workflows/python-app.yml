@@ -30,4 +30,4 @@ jobs:
         USERNAME: ${{ secrets.Username }}
         USERCONFIG: ${{ secrets.Config }}
       run: |
-        python run.py -u "$USERNAME" --in-command --daily
+        python run.py -u "$USERNAME" --config "USERCONFIG" --daily

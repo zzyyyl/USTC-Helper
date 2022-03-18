@@ -17,7 +17,7 @@ def ArgParser():
     parser.add_argument("--silence", help="run in silence", action='store_true')
     parser.add_argument("-u", "--username", help="your student ID", metavar="ID", dest="stuid")
     parser.add_argument("--store-password", help="store password in config", action='store_true')
-    parser.add_argument("--in-command", help="run in github-action", action="store_true")
+    parser.add_argument("--config", help="config for services", metavar="CONF")
     return parser
 
 
@@ -27,6 +27,6 @@ def ArgConflictCheck(args):
             raise ArgumentError("Conflict arguments: --daily, --service")
 
 def ArgInit(args):
-    if args.in_command:
+    if args.config:
         config["in-command"]["state"] = True
-        config["in-command"]["config"] = json.loads(base64.b64decode(os.environ["USERCONFIG"].encode()).decode('gbk'))
+        config["in-command"]["config"] = json.loads(base64.b64decode(args.config.encode()).decode('gbk'))
