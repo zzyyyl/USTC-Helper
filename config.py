@@ -1,3 +1,4 @@
+import os
 import json
 
 config = {
@@ -17,6 +18,8 @@ config = {
 }
 
 def DumpConfig(stuid, user_config):
+    if not os.path.exists("conf"):
+        os.mkdir("conf")
     with open(f"conf/{stuid}.json", "w") as f:
         json.dump(user_config, f, indent=4)
 

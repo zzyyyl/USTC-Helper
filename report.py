@@ -60,8 +60,6 @@ class Report:
         res = self.session.post(url=self.service["exec"], params=self.params, allow_redirects=False)
         res = self.session.get(res.headers["location"])
         if res.text.find("上报成功") != -1:
-            with open("test.html", "wb") as f:
-                f.write(res.content)
             if not silence:
                 print("上报成功.", res.text[res.text.find("上报时间"):].split("<")[0])
         else:
