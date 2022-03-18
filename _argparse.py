@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from config import config, LoadConfig, DumpConfig
-import json
+import json, base64
 
 class ArgumentError(Exception):
     def __init__(self, text):
@@ -28,4 +28,4 @@ def ArgConflictCheck(args):
 def ArgInit(args):
     if args.config:
         config["in-command"]["state"] = True
-        config["in-command"]["config"] = json.loads(args.config)
+        config["in-command"]["config"] = json.loads(base64.b64decode(args.config.encode()).decode('gbk'))
