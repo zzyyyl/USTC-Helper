@@ -4,10 +4,29 @@ config = {
         "daily-report": {
             "login": "https://weixine.ustc.edu.cn/2020/caslogin",
             "url": "https://weixine.ustc.edu.cn/2020/home",
+            "exec": "https://weixine.ustc.edu.cn/2020/daliy_report",
             "user-params": {
-                "jinji_lxr": "",    # 紧急联系人
-                "jinji_guanxi": "", # 与本人关系
-                "jiji_mobile": ""	# 联系人电话
+                "jinji_lxr": "",     # 紧急联系人
+                "jinji_guanxi": "",  # 与本人关系
+                "jiji_mobile": ""    # 联系人电话
+            }
+        },
+        "daily-apply": {
+            "login": "https://weixine.ustc.edu.cn/2020/caslogin",
+            "url": "https://weixine.ustc.edu.cn/2020/apply/daliy",
+            "pre-exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/i",
+            "exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/post",
+            # 对 user-params 的解释：
+            # 【现居地】（高位）
+            # 1，高新园区、先研院、国金院
+            # 2，合肥其他校区
+            # 3，合肥市内校外
+            # 【出校原因】（低位）
+            # 1，特殊原因前往合肥市外
+            # 2，合肥市内就医等紧急情况
+            # 3，跨校区上课、实验等
+            "user-params": {
+                "t": 23
             }
         }
     },
