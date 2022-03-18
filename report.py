@@ -52,7 +52,7 @@ class Report:
             print("Token not found!")
             return
 
-        res = self.session.post("https://weixine.ustc.edu.cn/2020/daliy_report", params=self.params, allow_redirects=False)
+        res = self.session.post(url=self.service["exec"], params=self.params, allow_redirects=False)
         res = self.session.get(res.headers["location"])
         if res.text.find("上报成功"):
             print("上报成功.", res.text[res.text.find("上报时间"):].split("<")[0])
