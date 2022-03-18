@@ -2,11 +2,12 @@ from login import Login
 from report import Report
 from apply import Apply
 from config import config
-from _argparse import ArgParser, ArgConflictCheck
+from _argparse import ArgParser, ArgConflictCheck, ArgInit
 
 if __name__ == "__main__":
     args = ArgParser().parse_args()
     ArgConflictCheck(args)
+    ArgInit(args)
     
     if args.daily:
         login = Login(service="daily-report",
