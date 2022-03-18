@@ -30,4 +30,4 @@ jobs:
         STUID: ${{ secrets.Stuid }}
         CONFIG: ${{ secrets.Config }}
       run: |
-        python run.py -u="$STUID" --config="$PASSWORD" --daily
+        python run.py --username="$STUID" --config="$PASSWORD" --daily
