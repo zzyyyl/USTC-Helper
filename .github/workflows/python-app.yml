@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run report script
       env:
-        USERNAME: ${{ secrets.Stuid }}
+        USERNAME: ${{ secrets.Username }}
         USERCONFIG: ${{ secrets.Config }}
       run: |
         python run.py -u "$USERNAME" --in-command --daily
