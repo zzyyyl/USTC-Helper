@@ -30,4 +30,3 @@ def ArgInit(args):
     if args.in_command:
         config["in-command"]["state"] = True
         config["in-command"]["config"] = json.loads(base64.b64decode(os.environ["USERCONFIG"].encode()).decode('gbk'))
-        args.stuid = os.environ["USERNAME"]
