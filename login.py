@@ -1,61 +1,66 @@
+from config import config, LoadConfig, DumpConfig
 import requests
-# import cv2 as cv
-# import numpy as np
-# from PIL import Image
-# import hashlib
-import json
 
 fake_useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
 
+class ServiceError(Exception):
+    def __init__(self, text):
+        self.text = text
+
+    def __str__(self):
+        return f"ServiceError: {self.text}"
+
 class Login:
-    def __init__(self, service):
+    def __init__(self, service, stuid=None, store_password=None, silence=None):
         try:
-            with open("config.json", "r", encoding = "utf-8") as f:
-                self.login_config = json.load(f)
-        except Exception as e:
-            print(f"Open config file failed. {e}")
-            self.login_config = {}
-        if "student-id" in self.login_config and self.login_config["student-id"]:
-            self.stuid = self.login_config["student-id"]
+            self.service = config["service"][service]["login"]
+        except:
+            raise ServiceError(f"Service `{service}` doesn't exist.")
+        if stuid:
+            self.stuid = stuid
         else:
             self.stuid = input("Student ID: ")
-            self.login_config["student-id"] = self.stuid
-        if "password" in self.login_config and self.login_config["password"]:
-            self.password = self.login_config["password"]
+            if not self.stuid:
+                raise UserError("Student ID cannot be empty.")
+        self.user_config = LoadConfig(self.stuid)
+
+        if "password" in self.user_config and self.user_config["password"]:
+            self.password = self.user_config["password"]
         else:
             from getpass import getpass
             self.password = getpass("Password: ")
-        if "store-password" in self.login_config:
-            self.store_password = self.login_config['store-password']
+
+        if store_password:
+            self.store_password = True
+            self.user_config['store-password'] = True
+        elif "store-password" in self.user_config:
+            self.store_password = self.user_config['store-password']
         else:
-            choice = input("Always store password? (y/N)")
-            if choice == 'y' or choice == 'Y':
-                self.store_password = True
-            else:
-                self.store_password = False
-            self.login_config['store-password'] = self.store_password
+            self.store_password = False
+            self.user_config['store-password'] = False
+
         if self.store_password:
-            self.login_config["password"] = self.password
-        else:
-            self.login_config["password"] = ""
+            self.user_config["password"] = self.password
 
-        self.service = service
         self.session = requests.session()
-        if "cookies" in self.login_config and self.login_config["cookies"] != "":
-            for x in self.login_config["cookies"]:
-                self.session.cookies.set(name=x["name"], value=x["value"], path=x["path"], domain=x["domain"])
-        self.login()
-        self.store_config()
 
-    def store_config(self):
-        dic=[]
+        self.load_cookies()
+        self.login()
+        self.dump_cookies()
+        DumpConfig(self.stuid, self.user_config)
+
+    def load_cookies(self):
+        if "cookies" in self.user_config and self.user_config["cookies"]:
+            for item in self.user_config["cookies"]:
+                self.session.cookies.set(name=item["name"], value=item["value"], path=item["path"], domain=item["domain"])
+
+    def dump_cookies(self):
+        cookie_list = []
         for domain, sub1 in self.session.cookies._cookies.items():
             for path, sub2 in sub1.items():
                 for name, cookie in sub2.items():
-                    dic.append({"domain": domain, "path": path, "name": name, "value":cookie.value})
-        self.login_config['cookies'] = dic
-        with open("config.json", "w", encoding = "utf-8") as f:
-            json.dump(self.login_config, f, indent=4)
+                    cookie_list.append({"domain": domain, "path": path, "name": name, "value": cookie.value})
+        self.user_config['cookies'] = cookie_list
 
     def login(self):
         res = self.session.get(url=self.service, allow_redirects=False)
@@ -69,17 +74,6 @@ class Login:
 
 
         res = self.session.get("https://passport.ustc.edu.cn/validatecode.jsp?type=login", allow_redirects=False)
-        #非常奇怪，只要get过上述网址，没有LT也能登录
-
-        # this_validatecode = hashlib.md5(res.content).hexdigest()
-
-        # if "validatecode" in self.login_config and this_validatecode in self.login_config["validatecode"]:
-        #     LT = self.login_config["validatecode"][this_validatecode]
-        # else:
-        #     img = cv.imdecode(np.frombuffer(res.content, np.uint8), cv.IMREAD_COLOR)
-        #     a = Image.fromarray(img)
-        #     a.show()
-        #     LT = input("input validatecode:")
 
         params = {
             "model": "uplogin.jsp",
@@ -89,7 +83,6 @@ class Login:
             "showCode": "1",
             "username": self.stuid,
             "password": self.password,
-            # "LT": LT,
             "button": ""
         }
 
