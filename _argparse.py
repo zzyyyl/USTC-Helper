@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from config import config, LoadConfig, DumpConfig
 import json, base64
+import os
 
 class ArgumentError(Exception):
     def __init__(self, text):
@@ -16,7 +17,7 @@ def ArgParser():
     parser.add_argument("--silence", help="run in silence", action='store_true')
     parser.add_argument("-u", "--username", help="your student ID", metavar="ID", dest="stuid")
     parser.add_argument("--store-password", help="store password in config", action='store_true')
-    parser.add_argument("--config", help="config for services", metavar="CONF")
+    parser.add_argument("--in-command", help="run in github-action", action="store_true")
     return parser
 
 
@@ -26,6 +27,7 @@ def ArgConflictCheck(args):
             raise ArgumentError("Conflict arguments: --daily, --service")
 
 def ArgInit(args):
-    if args.config:
+    if args.in_command:
         config["in-command"]["state"] = True
-        config["in-command"]["config"] = json.loads(base64.b64decode(args.config.encode()).decode('gbk'))
+        config["in-command"]["config"] = json.loads(base64.b64decode(os.environ["USER_CONFIG"].encode()).decode('gbk'))
+        args.username = os.environ["USERNAME"]
