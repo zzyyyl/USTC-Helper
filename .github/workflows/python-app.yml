@@ -28,6 +28,6 @@ jobs:
     - name: Run report script
       env:
         STUID: ${{ secrets.Stuid }}
-        CONFIG: ${{ secrets.Config }}
+        USER_CONFIG: ${{ secrets.Config }}
       run: |
-        python run.py --username="$STUID" --config="$PASSWORD" --daily
+        python run.py --in-command --daily
