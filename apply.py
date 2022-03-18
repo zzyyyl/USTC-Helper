@@ -1,5 +1,5 @@
 from config import config, LoadConfig, DumpConfig
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 class ApplyError(Exception):
     def __init__(self, text):
@@ -63,7 +63,7 @@ class Apply:
                 raise ApplyError("Token not found!")
             return
 
-        nowtime = datetime.now()
+        nowtime = datetime.now(timezone.utc) + timedelta(hours=8)
         start_date = nowtime.strftime("%Y-%m-%d %H:%M:%S")
         end_date = (nowtime + timedelta(days=1)).strftime("%Y-%m-%d 23:59:59")
         self.params = {
