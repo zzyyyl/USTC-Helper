@@ -1,52 +1,58 @@
-# USTC 助手
+# USTC-Helper
 
-**此项目仅供学习交流使用。开发者对使用此脚本造成的问题不负任何责任，不对此脚本执行效果做出任何担保，原则上不提供任何形式的技术支持。**
+**This project is for learning and communication purposes only. The developer is not responsible for any problems caused by the use of this script, does not guarantee the effectiveness of this script, and in principle does not provide any form of technical support.**
 
-欢迎对本项目提出改进意见。
+Suggestions for improvements to this project are welcome.
 
-使用方法：
+**<font color="red">Warning:</font>**
+- The error handling in this project is not perfect, please try to make sure your configuration is error free.
+- As the api of the health report website changes frequently, there is no guarantee that the script is up to date.
+
+usage:
 
 - `pip install -r requirements.txt`
-- 运行 `python run.py` 
+- Run `python run.py` 
 
-首次使用时需要输入用户配置。 `run.py` 还可以带一些命令行参数，你可以用 `run.py -h` 了解更多。
+The first time you use it you need to enter the user configuration.
+It can also take some command line arguments, you can use `run.py -h` to learn more.
 
-**注意：**
-- 你的用户配置会被保存在 `conf/` 文件夹内。若首次使用时输入了错误的配置，或者想修改你的配置，你可以在对应的文件里修改。或者你可以删除 `conf/` 下的文件以重置你的配置。
+**Notes:**
 
-## 功能
+- Your user configuration will be saved in `conf/`, you can check your configuration in the corresponding file. You can delete the file in `conf/` to reset your configuration.
 
-你可以在运行后输入对应功能的名字来使用那个功能。
+## Feature
 
-或者，你也可以用命令行参数 `--service SERVICE` 来指定使用的功能。
+You can use a feature by typing the name of it in the table below after running.
 
-|功能|名字|
+Alternatively, you can specify the feature to be used with the command line parameter `-service SERVICE`.
+
+|Feature|Name|
 |:---:|:---:|
-|每日健康上报|`daily-report`|
-|出校报备|`daily-apply`|
+|Daily health reporting|`daily-report`|
+|Out-of-school reporting|`daily-apply`|
 
-**注意：**
-- 默认在中校区，如有需要请自行修改 `report.py` 文件中的 `params`.
-- 出校报备参数在不是 `3` 时可能有些bug, 可以在`apply.py` 文件中改进.
+**Notes:**
 
-### 自动执行
+- The default residence is in Central Campus, please modify the `params` in the `report.py` file if you need.
+- There may be some bugs in the `apply.py` file if the report parameters are not `3`.
 
-这个功能集成了每日健康上报和出校报备两个功能。
+### Auto-run (Action)
 
-你可以fork后在secrets里配置参数 `USERNAME` 和 `CONFIG`, 借助 github Action 来实现。其中：
+This feature integrates both daily health reporting and out-of-school reporting.
 
-- `USERNAME` 是你的用户名;  
-- `CONFIG` 是你的配置的json格式的base64, 你可以在用命令行执行后在 `conf/{USERNAME}.json` 里找到.
+You can fork and configure the parameters `USERNAME` and `CONFIG` in your secrets. Where:
+- `USERNAME` is your username;
+- `CONFIG` is the base64 format of your json configuration, which you can find in `conf/{USERNAME}.json` after executing it from the command line.
 
-**注意base64并不是加密算法，请妥善保管你的个人信息。**
+**Note that base64 is not an encryption algorithm, so please keep your personal information safe.**
 
-参数在未经base64编码时与下面的例子类似：
+The parameters, when not encoded in base64, are similar to the following example.
 ``` python
 ORIGIN_CONFIG = {
     "user_params": {
         "daily-report": {
-            "jinji_lxr": "张三",
-            "jinji_guanxi": "父亲",
+            "jinji_lxr": "Zhang San",
+            "jinji_guanxi": "Father",
             "jiji_mobile": "1234567890"
         },
         "daily-apply": {
@@ -63,14 +69,14 @@ ORIGIN_CONFIG = {
     "password": "PAS5W0RD"
 }
 ```
-你可以使用
+You can use
 ```python
 CONFIG = base64.b64encode(json.dumps(ORIGIN_CONFIG).encode('gbk')).decode("ASCII")
 ```
-来获取base64编码后的`CONFIG`.
+to get the base64 encoded `CONFIG`.
 
-建议校验一次你的 `CONFIG` 正确性，以免提交错误的信息。你可以使用
+It is recommended to check the correctness of your `CONFIG` once to avoid submitting wrong information. You can use
 ```python
 json.loads(base64.b64decode(CONFIG.encode()).decode('gbk'))
 ```
-并与 `ORIGIN_CONFIG` 进行比较。
+and compare it with `ORIGIN_CONFIG`.
