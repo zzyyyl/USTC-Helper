@@ -50,7 +50,14 @@ ORIGIN_CONFIG = {
             "jiji_mobile": "1234567890"
         },
         "daily-apply": {
-            "t": "23"
+            "t": "3",
+            "return_college[]": [
+                "东校区",
+                "西校区",
+                "南校区",
+                "北校区",
+                "中校区"
+            ]
         }
     },
     "password": "PAS5W0RD"
