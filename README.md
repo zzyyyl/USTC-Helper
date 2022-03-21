@@ -1,4 +1,5 @@
 # USTC-Helper
+[中文](/README-cn.md)
 
 **This project is for learning and communication purposes only. The developer is not responsible for any problems caused by the use of this script, does not guarantee the effectiveness of this script, and in principle does not provide any form of technical support.**
 
