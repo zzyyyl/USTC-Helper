@@ -33,23 +33,23 @@ class Apply:
 
         if "t" not in self.user_params or self.user_params["t"] == "":
             print(
-                """【现居地】
-                1，高新园区、先研院、国金院
-                2，合肥其他校区
-                3，合肥市内校外""")
-            t1 = input("请输入现居地 (1/2/3)：")
-            while t1 not in ["1", "2", "3"]: t1 = input("请重新输入 (1/2/3)：")
-            print(
-                """【出校原因】
-                1，特殊原因前往合肥市外
-                2，合肥市内就医等紧急情况
-                3，跨校区上课、实验等""")
-            t2 = input("请输入出校原因 (1/2/3)：")
-            while t2 not in ["1", "2", "3"]: t2 = input("请重新输入 (1/2/3)：")
-            # 11,21,31->离校申请
-            # 12,13,22,32,33->进出校申请
-            # 23->跨校区报备
-            self.user_params["t"] = t1 + t2
+"""【出校原因】
+1. 特殊原因前往合肥市外
+2. 合肥市内就医等紧急情况
+3. 前往东西南北中校区
+4. 前往高新校区、先研院、国金院""")
+            t = input("请输入出校原因 (1/2/3/4)：")
+            while t not in ["1", "2", "3", "4"]: t = input("请重新输入 (1/2/3/4)：")
+            self.user_params["t"] = t
+
+        if "return_college[]" not in self.user_params or not self.user_params["return_college[]"]:
+            self.user_params["return_college[]"] = []
+            print("跨校区目的地:")
+            for region in ["东校区", "西校区", "南校区", "北校区", "中校区"]:
+                choice = input(f"{region} (y/n)")
+                while choice.lower() not in ["y", "n"]: choice = input(f"{region} (y/n)")
+                if choice.lower() == "y": self.user_params["return_college[]"].append(region)
+            self.user_params["return_college[]"]
 
         self.params = {
             "t": self.user_params["t"]
@@ -65,11 +65,12 @@ class Apply:
 
         nowtime = datetime.now(timezone.utc) + timedelta(hours=8)
         start_date = nowtime.strftime("%Y-%m-%d %H:%M:%S")
-        end_date = (nowtime + timedelta(days=1)).strftime("%Y-%m-%d 23:59:59")
+        end_date = nowtime.strftime("%Y-%m-%d 23:59:59")
         self.params = {
             "_token": _token,
             "start_date": start_date,
             "end_date": end_date,
+            "return_college[]": self.user_params["return_college[]"],
             "t": self.user_params["t"]
         }
 
@@ -91,4 +92,4 @@ class Apply:
             apply_list = res.text.split("<tbody>")[1].split("<tr>")[1:4]
             for items in apply_list:
                 if not silence:
-                    print(", ".join([item.split("</td>")[0] for item in items.split("<td>")[1:]]))
+                    print(", ".join([item.split("</td>")[0] for item in items.split("<td>")[1:5]]))
