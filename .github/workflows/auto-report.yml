@@ -3,7 +3,9 @@ name: Report scripts
 on: 
   push:
     branches:
-      - master
+      - 'master'
+    paths:
+      - '**.py'
 # UTC+8 0:30, 6:30, 12:30, 18:30
   schedule:
     - cron: '30 4,10,16,22 * * *'
