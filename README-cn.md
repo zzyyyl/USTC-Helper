@@ -50,6 +50,8 @@
 ORIGIN_CONFIG = {
     "user_params": {
         "daily-report": {
+            "dorm_building": "1",
+            "dorm": "1234",
             "jinji_lxr": "张三",
             "jinji_guanxi": "父亲",
             "jiji_mobile": "1234567890"
