@@ -93,3 +93,6 @@ class Apply:
             for items in apply_list:
                 if not silence:
                     print(", ".join([item.split("</td>")[0] for item in items.split("<td>")[1:5]]))
+
+        if res.text.find("报备成功") == -1:
+            raise ApplyError("报备失败")
