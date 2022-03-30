@@ -52,6 +52,8 @@ The parameters, when not encoded in base64, are similar to the following example
 ORIGIN_CONFIG = {
     "user_params": {
         "daily-report": {
+            "dorm_building": "1",
+            "dorm": "1234",
             "jinji_lxr": "Zhang San",
             "jinji_guanxi": "Father",
             "jiji_mobile": "1234567890"

@@ -19,6 +19,10 @@ class Report:
         if self.SERVICE_NAME not in self.user_config["user_params"]:
             self.user_config["user_params"][self.SERVICE_NAME] = {}
         self.user_params = self.user_config["user_params"][self.SERVICE_NAME]
+        if "dorm_building" not in self.user_params or self.user_params["dorm_building"] == "":
+            self.user_params["dorm_building"] = input("宿舍楼号：")
+        if "dorm" not in self.user_params or self.user_params["dorm"] == "":
+            self.user_params["dorm"] = input("宿舍房号：")
         if "jinji_lxr" not in self.user_params or self.user_params["jinji_lxr"] == "":
             self.user_params["jinji_lxr"] = input("紧急联系人：")
         if "jinji_guanxi" not in self.user_params or self.user_params["jinji_guanxi"] == "":
@@ -29,6 +33,8 @@ class Report:
         self.params = {
             "_token": "",
             "juzhudi": "中校区",
+            "dorm_building": self.user_params["dorm_building"],
+            "dorm": self.user_params["dorm"],
             "body_condition": "1",
             "body_condition_detail": "",
             "now_status": "1",
