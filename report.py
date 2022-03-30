@@ -33,8 +33,8 @@ class Report:
         self.params = {
             "_token": "",
             "juzhudi": "中校区",
-            # "dorm_building": self.user_params["dorm_building"],
-            # "dorm": self.user_params["dorm"],
+            "dorm_building": self.user_params["dorm_building"],
+            "dorm": self.user_params["dorm"],
             "body_condition": "1",
             "body_condition_detail": "",
             "now_status": "1",
