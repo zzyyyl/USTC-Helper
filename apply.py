@@ -71,6 +71,7 @@ class Apply:
             "start_date": start_date,
             "end_date": end_date,
             "return_college[]": self.user_params["return_college[]"],
+            "reason": "上课/自习",
             "t": self.user_params["t"]
         }
 
