@@ -51,6 +51,9 @@ class Apply:
                 if choice.lower() == "y": self.user_params["return_college[]"].append(region)
             self.user_params["return_college[]"]
 
+        if "reason" not in self.user_params or not self.user_params["reason"]:
+            self.user_params["reason"] = input("跨校区原因：")
+
         self.params = {
             "t": self.user_params["t"]
         }
@@ -65,13 +68,16 @@ class Apply:
 
         nowtime = datetime.now(timezone.utc) + timedelta(hours=8)
         start_date = nowtime.strftime("%Y-%m-%d %H:%M:%S")
-        end_date = nowtime.strftime("%Y-%m-%d 23:59:59")
+        if nowtime.hour >= 20:
+            end_date = (nowtime + timedelta(days=1)).strftime("%Y-%m-%d 23:59:59")
+        else:
+            end_date = nowtime.strftime("%Y-%m-%d 23:59:59")
         self.params = {
             "_token": _token,
             "start_date": start_date,
             "end_date": end_date,
             "return_college[]": self.user_params["return_college[]"],
-            "reason": "上课/自习",
+            "reason": self.user_params["reason"],
             "t": self.user_params["t"]
         }
 

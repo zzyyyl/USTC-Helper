@@ -14,20 +14,20 @@ class Report:
         self.session = session
         self.stuid = stuid
         self.user_config = LoadConfig(self.stuid)
-        if "user_params" not in self.user_config:
+        if "user_params" not in self.user_config or not self.user_config["user_params"]:
             self.user_config["user_params"] = {}
         if self.SERVICE_NAME not in self.user_config["user_params"]:
             self.user_config["user_params"][self.SERVICE_NAME] = {}
         self.user_params = self.user_config["user_params"][self.SERVICE_NAME]
-        if "dorm_building" not in self.user_params or self.user_params["dorm_building"] == "":
+        if "dorm_building" not in self.user_params or not self.user_params["dorm_building"]:
             self.user_params["dorm_building"] = input("宿舍楼号：")
-        if "dorm" not in self.user_params or self.user_params["dorm"] == "":
+        if "dorm" not in self.user_params or not self.user_params["dorm"]:
             self.user_params["dorm"] = input("宿舍房号：")
-        if "jinji_lxr" not in self.user_params or self.user_params["jinji_lxr"] == "":
+        if "jinji_lxr" not in self.user_params or not self.user_params["jinji_lxr"]:
             self.user_params["jinji_lxr"] = input("紧急联系人：")
-        if "jinji_guanxi" not in self.user_params or self.user_params["jinji_guanxi"] == "":
+        if "jinji_guanxi" not in self.user_params or not self.user_params["jinji_guanxi"]:
             self.user_params["jinji_guanxi"] = input("与本人关系：")
-        if "jiji_mobile" not in self.user_params or self.user_params["jiji_mobile"] == "":
+        if "jiji_mobile" not in self.user_params or not self.user_params["jiji_mobile"]:
             self.user_params["jiji_mobile"] = input("联系人电话：")
 
         self.params = {
