@@ -1,6 +1,5 @@
-from config import config
-
-from config import LoadConfig, DumpConfig
+from .config import config
+from .config import LoadConfig, DumpConfig
 
 class ReportError(Exception):
     def __init__(self, text):
@@ -9,8 +8,16 @@ class ReportError(Exception):
     def __str__(self):
         return f"ReportError: {self.text}"
 
+REPORT_SERVICE_NAME = "daily-report"
+config["service"][REPORT_SERVICE_NAME] = {
+    "doc": "每日健康上报",
+    "login": "https://weixine.ustc.edu.cn/2020/caslogin",
+    "url": "https://weixine.ustc.edu.cn/2020/home",
+    "exec": "https://weixine.ustc.edu.cn/2020/daliy_report",
+}
+
 class Report:
-    SERVICE_NAME = "daily-report"
+    SERVICE_NAME = REPORT_SERVICE_NAME
     service = config["service"][SERVICE_NAME]
     def __init__(self, session, stuid, silence=None):
         self.session = session
@@ -75,4 +82,4 @@ class Report:
                 print("上报失败")
             raise ReportError("上报失败")
 
-config["service"][Report.SERVICE_NAME]["entry"] = Report
+config["service"][REPORT_SERVICE_NAME]["entry"] = Report

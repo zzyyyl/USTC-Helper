@@ -1,7 +1,5 @@
-from config import config
-
-from config import LoadConfig, DumpConfig
-
+from .config import config
+from .config import LoadConfig, DumpConfig
 from datetime import datetime, timedelta, timezone
 
 class ApplyError(Exception):
@@ -11,8 +9,17 @@ class ApplyError(Exception):
     def __str__(self):
         return f"ApplyError: {self.text}"
 
+APPLY_SERVICE_NAME = "daily-apply"
+config["service"][APPLY_SERVICE_NAME] = {
+    "doc": "出校报备",
+    "login": "https://weixine.ustc.edu.cn/2020/caslogin",
+    "url": "https://weixine.ustc.edu.cn/2020/apply/daliy",
+    "pre-exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/i",
+    "exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/post",
+}
+
 class Apply:
-    SERVICE_NAME = "daily-apply"
+    SERVICE_NAME = APPLY_SERVICE_NAME
     service = config["service"][SERVICE_NAME]
     def __init__(self, session, stuid, silence=None):
         self.session = session
@@ -107,4 +114,4 @@ class Apply:
         if res.text.find("报备成功") == -1:
             raise ApplyError("报备失败")
 
-config["service"][Apply.SERVICE_NAME]["entry"] = Apply
+config["service"][APPLY_SERVICE_NAME]["entry"] = Apply

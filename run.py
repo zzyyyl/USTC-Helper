@@ -1,11 +1,6 @@
-from config import config
-
+from USTCHelper import config
 from _argparse import ArgParser, ArgConflictCheck, ArgInit
-
-from login import Login
-
-import report as _report
-import apply as _apply
+from USTCHelper import Login
 
 def run_service(args, service=None):
     global config

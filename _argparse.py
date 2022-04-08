@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from config import config, LoadConfig, DumpConfig
+from USTCHelper import config
 import json, base64
 import os
 
