@@ -66,7 +66,8 @@ ORIGIN_CONFIG = {
                 "南校区",
                 "北校区",
                 "中校区"
-            ]
+            ],
+            "reason": "course"
         }
     },
     "password": "PAS5W0RD"
