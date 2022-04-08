@@ -1,4 +1,7 @@
-from config import config, LoadConfig, DumpConfig
+from config import config
+
+from config import LoadConfig, DumpConfig
+
 from datetime import datetime, timedelta, timezone
 
 class ApplyError(Exception):
@@ -103,3 +106,5 @@ class Apply:
 
         if res.text.find("报备成功") == -1:
             raise ApplyError("报备失败")
+
+config["service"][Apply.SERVICE_NAME]["entry"] = Apply

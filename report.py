@@ -1,4 +1,6 @@
-from config import config, LoadConfig, DumpConfig
+from config import config
+
+from config import LoadConfig, DumpConfig
 
 class ReportError(Exception):
     def __init__(self, text):
@@ -67,8 +69,10 @@ class Report:
         res = self.session.get(res.headers["location"])
         if res.text.find("上报成功") != -1:
             if not silence:
-                print("上报成功.", res.text[res.text.find("上报时间"):].split("<")[0])
+                print(res.text[res.text.find("上报成功"):].split("<")[0])
         else:
             if not silence:
                 print("上报失败")
             raise ReportError("上报失败")
+
+config["service"][Report.SERVICE_NAME]["entry"] = Report

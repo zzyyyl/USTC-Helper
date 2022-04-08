@@ -1,4 +1,7 @@
-from config import config, LoadConfig, DumpConfig
+from config import config
+
+from config import LoadConfig, DumpConfig
+
 import requests
 
 fake_useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
@@ -15,7 +18,7 @@ class Login:
         try:
             self.service = config["service"][service]["login"]
         except:
-            raise ServiceError(f"Service `{service}` doesn't exist.")
+            self.service = ''
         if stuid:
             self.stuid = stuid
         else:
@@ -63,6 +66,7 @@ class Login:
         self.user_config['cookies'] = cookie_list
 
     def login(self):
+        if not self.service: return
         res = self.session.get(url=self.service, allow_redirects=False)
         res = self.session.get(url=res.headers["location"], allow_redirects=False)
         if res.status_code != 200:
