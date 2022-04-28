@@ -6,6 +6,7 @@ on:
       - 'master'
     paths:
       - '**.py'
+      - 'requirements.txt'
 # UTC+8 0:30, 6:30, 12:30, 20:30
   schedule:
     - cron: '30 4,12,16,22 * * *'
