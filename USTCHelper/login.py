@@ -51,6 +51,7 @@ class Login:
             self.user_config["password"] = self.password
 
         self.session = requests.session()
+        self.session.headers["User-Agent"] = fake_useragent
 
         self.load_cookies()
         self.login()
