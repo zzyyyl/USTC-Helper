@@ -3,6 +3,7 @@ from sympy import re
 from .config import config
 from .config import LoadConfig, DumpConfig
 from bs4 import BeautifulSoup
+import json
 
 class ApplyError(Exception):
     def __init__(self, text):
@@ -64,7 +65,6 @@ class LessonTable:
             self.user_params["semester"] = input("查询学期：")
             semesterId = getSemesterId()
 
-        print(semesterId)
         dataId = int(res.text.split("var dataId = ", 1)[1].split(";", 1)[0])
         bizTypeId = int(res.text.split("bizTypeId: ", 1)[1].split(",", 1)[0])
         res = self.session.get(url=self.service['exec'], params = {
@@ -72,10 +72,19 @@ class LessonTable:
             "bizTypeId": bizTypeId,
             "dataId": dataId,
         })
-        print({
-            "semesterId": semesterId,
-            "bizTypeId": bizTypeId,
-            "dataId": dataId,
-        })
-        print(res.text)
+        context = json.loads(res.text)
+        courses = []
+        for lesson in context["lessons"]:
+            courses.append(
+                {
+                    "name": lesson["course"]["nameZh"],
+                    "scheduleGroupStr": [
+                        x.split(' ') for x in lesson["scheduleGroupStr"].split('\n')
+                    ],
+                    "start_date": lesson["semester"]["startDate"],
+                    "end_date": lesson["semester"]["endDate"]
+                }
+            )
+        print(json.dumps(courses, indent=4, ensure_ascii=False))
+        # print(json.dumps(context["lessons"][0], indent=4, ensure_ascii=False))
 config["service"][LESSONTABLE_SERVICE_NAME]["entry"] = LessonTable
