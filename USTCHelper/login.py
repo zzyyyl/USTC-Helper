@@ -11,6 +11,13 @@ class ServiceError(Exception):
     def __str__(self):
         return f"ServiceError: {self.text}"
 
+class UserError(Exception):
+    def __init__(self, text):
+        self.text = text
+
+    def __str__(self):
+        return f"UserError: {self.text}"
+
 class Login:
     def __init__(self, service, stuid=None, store_password=None, silence=None):
         try:
