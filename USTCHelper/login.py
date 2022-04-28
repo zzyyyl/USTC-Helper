@@ -73,15 +73,11 @@ class Login:
 
     def login(self):
         if not self.service: return
-        res = self.session.get(url=self.service, allow_redirects=False)
-        res = self.session.get(url=res.headers["location"], allow_redirects=False)
-        if res.status_code != 200:
-            res = self.session.get(url=res.headers["location"])
-            return
+        res = self.session.get(url=self.service)
         s = res.text
         c = s.find("name=\"CAS_LT\"")
+        if c == -1: return
         CAS_LT = s[c:].split('\"')[3]
-
 
         res = self.session.get("https://passport.ustc.edu.cn/validatecode.jsp?type=login", allow_redirects=False)
 
