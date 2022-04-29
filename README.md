@@ -52,7 +52,7 @@ The format of `DATE` can be the following (case-insensitive).
 2. `(thisweek|nextweek|next-?[0-9]+week) (mon|tue|wed|thr|fri|sat|sun)`
    denotes `weekday of (this week|next week|next n weeks)`.
    For example, `next-1week Mon` denotes `last Monday`.
-3. `(thisweek|nextweek|next-?[0-9]+week) (-? [0-9]+)`
+3. `(thisweek|nextweek|next-?[0-9]+week) (-?[0-9]+)`
    means `m days past Monday of (thisweek|nextweek|next n week)`.
    For example, `thisweek -2` denotes `last Saturday` (2 days to this Monday).
 4. a date in the form of `YYYY-MM-DD`, `YY-MM-DD`, `MM-DD`

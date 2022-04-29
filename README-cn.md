@@ -34,6 +34,8 @@
 |出校报备|`daily-apply`|
 |课表查询|`lesson-table`|
 
+![一个例子](pic/example.png)
+
 **注意：**
 
 1. 默认在中校区，如有需要请自行修改 `report.py` 文件中的 `params`.
