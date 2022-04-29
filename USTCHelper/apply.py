@@ -21,7 +21,7 @@ config["service"][APPLY_SERVICE_NAME] = {
 class Apply:
     SERVICE_NAME = APPLY_SERVICE_NAME
     service = config["service"][SERVICE_NAME]
-    def __init__(self, session, stuid, silence=None):
+    def __init__(self, session, stuid, silence=None, params=None):
         self.session = session
         self.stuid = stuid
         self.user_config = LoadConfig(self.stuid)

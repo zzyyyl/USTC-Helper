@@ -2,7 +2,7 @@ from USTCHelper import config
 from _argparse import ArgParser, ArgConflictCheck, ArgInit
 from USTCHelper import Login
 
-def run_service(args, service=None):
+def run_service(args, service=None, params=None):
     global config
     if not service:
         try:
@@ -20,7 +20,8 @@ def run_service(args, service=None):
     return config["service"][service]["entry"](
         session=login.session,
         stuid=login.stuid,
-        silence=args.silence
+        silence=args.silence,
+        params=params
     )
 
 if __name__ == "__main__":
@@ -45,9 +46,12 @@ if __name__ == "__main__":
                 url_info = ''
             print(f"{service}{doc_info}{url_info}")
         while True:
-            service = input("Choose service:")
-            if service not in config["service"]:
+            service = input("Choose service:").split(' ', 1)
+            if service[0] not in config["service"]:
                 break
-            run_service(args, service)
+            if len(service) == 1:
+                run_service(args, service[0])
+            else:
+                run_service(args, service[0], params=service[1])
     if not args.silence:
         print("Exit.")

@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import json
 import numpy as np
 from datetime import datetime, timedelta, timezone
+from submodules import AmiyaTimePlanner
 
 timeline_t = [('beginTime', datetime), ("endTime", datetime), ("event", dict)]
 
@@ -39,10 +40,15 @@ CLASSTIME = [
 class LessonTable:
     SERVICE_NAME = LESSONTABLE_SERVICE_NAME
     service = config["service"][SERVICE_NAME]
-    def __init__(self, session, stuid, silence=None):
+    def __init__(self, session, stuid, silence=None, params=None):
+        self.result = r"{}"
         self.session = session
         self.stuid = stuid
         self.user_config = LoadConfig(self.stuid)
+        if params:
+            self.now, _ = AmiyaTimePlanner.set.getDayFromParams(params=params)
+        else:
+            self.now = datetime.now() 
         if "user_params" not in self.user_config:
             self.user_config["user_params"] = {}
         if self.SERVICE_NAME not in self.user_config["user_params"]:
@@ -97,12 +103,33 @@ class LessonTable:
             classes_in_week = []
             for x in lesson["scheduleGroupStr"].split('\n'):
                 items = x.split(' ')
-                classes_in_week.append({
-                    "weekday": int(items[2].split(':', 1)[1].split('(', 1)[0]),
-                    "classes": [int(xi) for xi in items[2].split('(', 1)[1].split(')', 1)[0].split(',')],
-                    "room": items[1],
-                    "teacher": items[3]
-                })
+                tmp = items[2].split('(', 1)[1].split(')', 1)[0]
+                if len(tmp.split(',')) == 1:
+                    classes = tmp.split('~')
+                    if len(classes) != 2:
+                        raise ValueError("Unrecognized class: ", x)
+                    start_time = classes[0]
+                    end_time = classes[1]
+                else:
+                    classes = [int(xi) for xi in tmp.split(',')]
+                    start_time = CLASSTIME[classes[0]-1].split('-')[0]
+                    end_time = CLASSTIME[classes[-1]-1].split('-')[1]
+                added = False
+                for item in classes_in_week:
+                    if item["weekday"] == int(items[2].split(':', 1)[1].split('(', 1)[0]) \
+                    and item["startTime"] == start_time \
+                    and item["endTime"] == end_time:
+                        item["teacher"] = item["teacher"] + "," + items[3]
+                        added = True
+                        break
+                if not added:
+                    classes_in_week.append({
+                        "weekday": int(items[2].split(':', 1)[1].split('(', 1)[0]),
+                        "startTime": start_time,
+                        "endTime": end_time,
+                        "room": items[1],
+                        "teacher": items[3]
+                    })
 
             if start_date.weekday():
                 start_date = start_date + timedelta(days=7-start_date.weekday())
@@ -111,8 +138,8 @@ class LessonTable:
             classes_exact = []
             for week_exact in weeks_exact:
                 for item in classes_in_week:
-                    start_time = CLASSTIME[item["classes"][0]-1].split('-')[0]
-                    end_time = CLASSTIME[item["classes"][-1]-1].split('-')[1]
+                    start_time = item["startTime"]
+                    end_time = item["endTime"]
                     day_exact = week_exact + timedelta(days=item["weekday"] - 1)
                     classes_exact.append({
                         "startTime": day_exact.replace(
@@ -153,7 +180,8 @@ class LessonTable:
                 "endTime": item["endTime"].split(' ')[1],
                 "event": f"{event['name']}, {event['room']}, {event['teacher']}"
             })
-        # coursesList = coursesArray.tolist()
-        print(json.dumps(coursesDict, indent=4, ensure_ascii=False))
-        # print(json.dumps(context["lessons"][0], indent=4, ensure_ascii=False))
+        self.result = json.dumps(coursesDict, ensure_ascii=False)
+        if not silence:
+            AmiyaTimePlanner.timeline.main(now=self.now, config={"day": coursesDict})
+
 config["service"][LESSONTABLE_SERVICE_NAME]["entry"] = LessonTable

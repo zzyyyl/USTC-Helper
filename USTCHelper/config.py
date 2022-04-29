@@ -44,7 +44,7 @@ config["service"][CONFIG_SERVICE_NAME] = {
 class Config:
     SERVICE_NAME = CONFIG_SERVICE_NAME
     service = config["service"][SERVICE_NAME]
-    def __init__(self, stuid, silence=None, **kwargs):
+    def __init__(self, stuid, silence=None, params=None, **kwargs):
         self.stuid = stuid
         self.run(silence)
 
