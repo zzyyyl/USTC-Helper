@@ -1,10 +1,11 @@
-from .config import config
-from .config import LoadConfig, DumpConfig
+from typing import Optional, Tuple
 from bs4 import BeautifulSoup
 import json
 import numpy as np
 from datetime import datetime, timedelta, timezone
 from submodules import AmiyaTimePlanner
+from .config import config
+from .config import LoadConfig, DumpConfig
 
 timeline_t = [('beginTime', datetime), ("endTime", datetime), ("event", dict)]
 
@@ -46,7 +47,9 @@ class LessonTable:
         self.stuid = stuid
         self.user_config = LoadConfig(self.stuid)
         if params:
-            self.now, _ = AmiyaTimePlanner.set.getDayFromParams(params=params)
+            self.now, params = AmiyaTimePlanner.utils.getDateFromParams(params=params)
+            if params:
+                self.now, params = self._getTimeFromParams(params=params, now=self.now)
         else:
             self.now = datetime.now() 
         if "user_params" not in self.user_config:
@@ -56,6 +59,17 @@ class LessonTable:
         self.user_params = self.user_config["user_params"][self.SERVICE_NAME]
         self.lesson_table(silence=silence)
         DumpConfig(self.stuid, self.user_config)
+
+    @staticmethod
+    def _getTimeFromParams(params: str, now=datetime.now()) -> Tuple[datetime, Optional[str]]:
+        params = params.split(' ', 1)
+        _time = AmiyaTimePlanner.utils.getTimeFromStr(params[0])
+        if _time:
+            _time = now.replace(hour=_time.hour, minute=_time.minute, second=_time.second)
+        else:
+            _time = now.replace(hour=0, minute=0, second=0)
+        if len(params) == 1: return (_time, None)
+        else: return (_time, params[1])
 
     def lesson_table(self, silence=None):
         res = self.session.get(url=self.service["url"])
@@ -182,6 +196,6 @@ class LessonTable:
             })
         self.result = json.dumps(coursesDict, ensure_ascii=False)
         if not silence:
-            AmiyaTimePlanner.timeline.main(now=self.now, config={"day": coursesDict})
+            AmiyaTimePlanner.utils.timeline(now=self.now, config={"day": coursesDict})
 
 config["service"][LESSONTABLE_SERVICE_NAME]["entry"] = LessonTable
