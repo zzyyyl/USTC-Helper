@@ -1,0 +1,3 @@
+[submodule "AmiyaTimePlanner"]
+	path = submodules/AmiyaTimePlanner
+	url = git@github.com:zzyyyl/AmiyaTimePlanner.git
