@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 url_info = ''
             print(f"{service}{doc_info}{url_info}")
         while True:
-            service = input("Choose service:").split(' ', 1)
+            service = input(">>> ").split(' ', 1)
             if service[0] not in config["service"]:
                 break
             if len(service) == 1:
@@ -54,4 +54,4 @@ if __name__ == "__main__":
             else:
                 run_service(args, service[0], params=service[1])
     if not args.silence:
-        print("Exit.")
+        print("Bye")
