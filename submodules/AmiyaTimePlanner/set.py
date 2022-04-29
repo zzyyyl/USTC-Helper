@@ -35,13 +35,23 @@ def isTime(param: str) -> bool:
 		return False
 	return True
 
-def loadConfig():
-	try:
-		with open("timeline.json", "r", encoding="utf8") as f:
-			time_schedule = json.load(f)
-		assert type(time_schedule) == dict
-	except:
-		time_schedule = {}
+def loadConfig(config_path="timeline.json", config=None):
+	if config:
+		if type(config) == str:
+			time_schedule = json.loads(config)
+			if type(time_schedule) != dict:
+				raise RuntimeError(f"type(time_schedule) is `{type(time_schedule)}`, but should be `dict`.")
+		elif type(config) == dict:
+			time_schedule = config
+		else:
+			raise RuntimeError(f"type(config) is `{type(config)}`, but should be `str` or `dict`.")
+	else:
+		try:
+			with open(config_path, "r", encoding="utf8") as f:
+				time_schedule = json.load(f)
+			assert type(time_schedule) == dict
+		except:
+			time_schedule = {}
 	if "week" in time_schedule:
 		assert type(time_schedule["week"]) == list
 	else:
@@ -52,9 +62,10 @@ def loadConfig():
 		time_schedule["day"] = {}
 	return time_schedule
 
-def dumpConfig(time_schedule):
-	with open("timeline.json", "w", encoding="utf8") as f:
-		json.dump(time_schedule, f, indent=2)
+def dumpConfig(time_schedule, config_path="timeline.json"):
+	if config_path:
+		with open(config_path, "w", encoding="utf8") as f:
+			json.dump(time_schedule, f, indent=2)
 
 # Week 0 13:30-15:30 doSomething
 # Week Mon 13:30-15:30 doSomething
@@ -88,16 +99,7 @@ def addWeekEvent(params: str, now, time_schedule):
 		dumpConfig(time_schedule=time_schedule)
 		print("Adding success.")
 
-# Day today 13:30-15:30 doSomething
-# Day 0 13:30-15:30 doSomething
-# Day 2022-4-13 13:30-15:30 doSomething
-# Day thisweek Mon 13:30-15:30 doSomething
-# Day nextweek Mon 13:30-15:30 doSomething
-# Day next1week Mon 13:30-15:30 doSomething
-def addDayEvent(params: str, now, time_schedule):
-	assert "day" in time_schedule
-	day_schedule = time_schedule["day"]
-	assert type(day_schedule) == dict
+def getDayFromParams(params: str, now=datetime.now()):
 	assert type(params) == str
 	params = params.split(' ', 1)
 	param = params[0].lower()
@@ -141,7 +143,25 @@ def addDayEvent(params: str, now, time_schedule):
 			except: pass
 			else: break
 			raise ValueError("Unrecognized time data " + param)
-	params = params[1].split(' ', 1)
+	if len(params) == 1:
+		return (day_formatted, None)
+	else:
+		return (day_formatted, params[1])
+
+# Day today 13:30-15:30 doSomething
+# Day 0 13:30-15:30 doSomething
+# Day 2022-4-13 13:30-15:30 doSomething
+# Day thisweek Mon 13:30-15:30 doSomething
+# Day nextweek Mon 13:30-15:30 doSomething
+# Day next1week Mon 13:30-15:30 doSomething
+def addDayEvent(params: str, now, time_schedule):
+	assert "day" in time_schedule
+	day_schedule = time_schedule["day"]
+	assert type(day_schedule) == dict
+
+	day_formatted, params = getDayFromParams(params=params, now=now)
+
+	params = params.split(' ', 1)
 	if '-' in params[0]:
 		assert len(params[0].split('-')) == 2
 		beginTime, endTime = params[0].split('-')

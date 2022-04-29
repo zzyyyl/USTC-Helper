@@ -20,13 +20,23 @@ message = {
 	]
 }
 
-def loadConfig():
-	try:
-		with open("timeline.json", "r", encoding="utf8") as f:
-			time_schedule = json.load(f)
-		assert type(time_schedule) == dict
-	except:
-		time_schedule = {}
+def loadConfig(config_path="timeline.json", config=None):
+	if config:
+		if type(config) == str:
+			time_schedule = json.loads(config)
+			if type(time_schedule) != dict:
+				raise RuntimeError(f"type(time_schedule) is `{type(time_schedule)}`, but should be `dict`.")
+		elif type(config) == dict:
+			time_schedule = config
+		else:
+			raise RuntimeError(f"type(config) is `{type(config)}`, but should be `str` or `dict`.")
+	else:
+		try:
+			with open(config_path, "r", encoding="utf8") as f:
+				time_schedule = json.load(f)
+			assert type(time_schedule) == dict
+		except:
+			time_schedule = {}
 	if "week" in time_schedule:
 		assert type(time_schedule["week"]) == list
 	else:
@@ -59,11 +69,31 @@ def classify(now, today_schedule):
 	waiting_events = []
 
 	for item in today_schedule:
-		beginTime = datetime.strptime(item["beginTime"], "%H:%M")
-		beginTime = now.replace(hour=beginTime.hour, minute=beginTime.minute, second=0)
+		while True:
+			try:
+				beginTime = datetime.strptime(item["beginTime"], "%H:%M")
+				beginTime = now.replace(hour=beginTime.hour, minute=beginTime.minute, second=0)
+			except: pass
+			else: break
+			try:
+				beginTime = datetime.strptime(item["beginTime"], "%H:%M:%S")
+				beginTime = now.replace(hour=beginTime.hour, minute=beginTime.minute, second=beginTime.second)
+			except: pass
+			else: break
+			raise ValueError("Unrecognized `beginTime`: " + beginTime)
 
-		endTime = datetime.strptime(item["endTime"], "%H:%M")
-		endTime = now.replace(hour=endTime.hour, minute=endTime.minute, second=0)
+		while True:
+			try:
+				endTime = datetime.strptime(item["endTime"], "%H:%M")
+				endTime = now.replace(hour=endTime.hour, minute=endTime.minute, second=0)
+			except: pass
+			else: break
+			try:
+				endTime = datetime.strptime(item["endTime"], "%H:%M:%S")
+				endTime = now.replace(hour=endTime.hour, minute=endTime.minute, second=endTime.second)
+			except: pass
+			else: break
+			raise ValueError("Unrecognized `endTime`: " + endTime)
 
 		if item["event"]:
 			if beginTime <= now and now <= endTime:
@@ -79,10 +109,9 @@ def classify(now, today_schedule):
 
 	return ongoing_events_array, waiting_events_array
 
-def main():
-	now = datetime.now()
+def main(now = datetime.now(), config_path="timeline.json", config=None):
 	random.seed(now.timestamp())
-	time_schedule = loadConfig()
+	time_schedule = loadConfig(config_path=config_path, config=config)
 	today_schedule = getDayPlan(now, time_schedule)
 	ongoing_events_array, waiting_events_array = classify(now, today_schedule)
 	ongoing_events_count = len(ongoing_events_array)
