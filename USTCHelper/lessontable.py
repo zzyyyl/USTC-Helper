@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from submodules import AmiyaTimePlanner
 from .config import config
 from .config import LoadConfig, DumpConfig
-from .utils import seperateParams
+from .utils import seParams
 
 timeline_t = [('beginTime', datetime), ("endTime", datetime), ("event", dict)]
 
@@ -49,10 +49,9 @@ class LessonTable:
         self.user_config = LoadConfig(self.stuid)
         if params:
             self.now, params = AmiyaTimePlanner.utils.getDateFromParams(params=params)
-            if params:
-                self.now, params = self._getTimeFromParams(params=params, now=self.now)
+            self.now, params = self._getTimeFromParams(params=params, now=self.now)
         else:
-            self.now = datetime.now() 
+            self.now = datetime.now()
         if "user_params" not in self.user_config:
             self.user_config["user_params"] = {}
         if self.SERVICE_NAME not in self.user_config["user_params"]:
@@ -62,12 +61,10 @@ class LessonTable:
         DumpConfig(self.stuid, self.user_config)
 
     @staticmethod
-    def _getTimeFromParams(params: str, now=datetime.now()) -> Tuple[datetime, Optional[str]]:
-        param, params = seperateParams(params)
-        _time = AmiyaTimePlanner.utils.getTimeFromStr(param)
-        if _time:
-            _time = now.replace(hour=_time.hour, minute=_time.minute, second=_time.second)
-        else:
+    def _getTimeFromParams(params: Optional[str], now=datetime.now()) -> Tuple[datetime, Optional[str]]:
+        param, params = seParams(params)
+        _time = AmiyaTimePlanner.utils.getTimeFromStr(param, now)
+        if not _time:
             _time = now.replace(hour=0, minute=0, second=0)
         return (_time, params)
 

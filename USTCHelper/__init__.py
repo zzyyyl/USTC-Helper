@@ -1,4 +1,4 @@
-from .utils import seperateParams
+from .utils import seParams
 from .config import config
 from .login import Login
 

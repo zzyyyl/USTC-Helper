@@ -1,11 +1,12 @@
+import traceback
 from USTCHelper import config
 from _argparse import ArgParser, ArgConflictCheck, ArgInit
 from USTCHelper import Login
-from USTCHelper import seperateParams
+from USTCHelper import seParams
 
 def run_service(args, service):
     global config
-    service, params = seperateParams(service)
+    service, params = seParams(service)
     if service not in config["service"]:
         raise RuntimeError(f"service `{service}` does not exist.")
 
@@ -51,7 +52,6 @@ if __name__ == "__main__":
             try:
                 run_service(args, service)
             except Exception as e:
-                print(e)
-                raise
+                traceback.print_exc()
     if not args.silence:
         print("Bye")

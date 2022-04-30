@@ -4,7 +4,10 @@ def assertOfType(param, T: type, paramName: str):
     if type(param) != T:
         raise ValueError(f"`{paramName}` is of type `{type(param)}`, but should be `{T}`.")
 
-def seperateParams(params: str) -> Tuple[str, Optional[str]]:
+def seParams(params: Optional[str]) -> Tuple[str, Optional[str]]:
+    # seParams = separate params
+    if params == None:
+        return None, None
     assertOfType(params, str, "params")
     paramList = params.strip().split(' ', 1)
     if len(paramList) == 1:
