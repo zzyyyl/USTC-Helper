@@ -1,15 +1,14 @@
 from USTCHelper import config
 from _argparse import ArgParser, ArgConflictCheck, ArgInit
 from USTCHelper import Login
+from USTCHelper import seperateParams
 
-def run_service(args, service=None, params=None):
+def run_service(args, service):
     global config
-    if not service:
-        try:
-            service = args.service
-            assert service
-        except Exception as e:
-            raise
+    service, params = seperateParams(service)
+    if service not in config["service"]:
+        raise RuntimeError(f"service `{service}` does not exist.")
+
     login = Login(
         service=service,
         stuid=args.stuid,
@@ -33,7 +32,7 @@ if __name__ == "__main__":
         run_service(args, 'daily-report')
         run_service(args, 'daily-apply')
     elif args.service:
-        run_service(args)
+        run_service(args, args.service)
     else:
         for service, detail in config["service"].items():
             if 'doc' in detail:
@@ -46,12 +45,13 @@ if __name__ == "__main__":
                 url_info = ''
             print(f"{service}{doc_info}{url_info}")
         while True:
-            service = input(">>> ").split(' ', 1)
-            if service[0] not in config["service"]:
-                break
-            if len(service) == 1:
-                run_service(args, service[0])
-            else:
-                run_service(args, service[0], params=service[1])
+            service = input(">>> ")
+            if service == "exit":
+                break;
+            try:
+                run_service(args, service)
+            except Exception as e:
+                print(e)
+                raise
     if not args.silence:
         print("Bye")

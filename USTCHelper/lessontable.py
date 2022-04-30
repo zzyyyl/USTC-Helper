@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from submodules import AmiyaTimePlanner
 from .config import config
 from .config import LoadConfig, DumpConfig
+from .utils import seperateParams
 
 timeline_t = [('beginTime', datetime), ("endTime", datetime), ("event", dict)]
 
@@ -62,14 +63,13 @@ class LessonTable:
 
     @staticmethod
     def _getTimeFromParams(params: str, now=datetime.now()) -> Tuple[datetime, Optional[str]]:
-        params = params.split(' ', 1)
-        _time = AmiyaTimePlanner.utils.getTimeFromStr(params[0])
+        param, params = seperateParams(params)
+        _time = AmiyaTimePlanner.utils.getTimeFromStr(param)
         if _time:
             _time = now.replace(hour=_time.hour, minute=_time.minute, second=_time.second)
         else:
             _time = now.replace(hour=0, minute=0, second=0)
-        if len(params) == 1: return (_time, None)
-        else: return (_time, params[1])
+        return (_time, params)
 
     def lesson_table(self, silence=None):
         res = self.session.get(url=self.service["url"])
