@@ -39,6 +39,7 @@ CLASSTIME = [
     "19:50-20:35",
     "20:40-21:25"
 ]
+
 class LessonTable:
     SERVICE_NAME = LESSONTABLE_SERVICE_NAME
     service = config["service"][SERVICE_NAME]
