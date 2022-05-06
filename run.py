@@ -46,9 +46,25 @@ if __name__ == "__main__":
                 url_info = ''
             print(f"{service}{doc_info}{url_info}")
         while True:
-            service = input(">>> ")
+            try:
+                service = input(">>> ")
+            except EOFError:
+                break
+            except KeyboardInterrupt as e:
+                print("\nKeyboardInterrupt")
+                continue
+            except Exception as e:
+                traceback.print_exc()
+                break
+
+            if service == "":
+                continue
             if service == "exit":
-                break;
+                print("Use exit() or Ctrl-Z plus Return to exit")
+                continue
+            if service == "exit()":
+                break
+
             try:
                 run_service(args, service)
             except Exception as e:
