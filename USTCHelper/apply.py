@@ -15,7 +15,7 @@ config["service"][APPLY_SERVICE_NAME] = {
     "login": "https://weixine.ustc.edu.cn/2020/caslogin",
     "url": "https://weixine.ustc.edu.cn/2020/apply/daliy",
     "pre-exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/i",
-    "exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/post",
+    "exec": "https://weixine.ustc.edu.cn/2020/apply/daliy/ipost",
 }
 
 class Apply:
